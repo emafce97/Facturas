@@ -1,0 +1,85 @@
+public class Cliente {
+	
+	private ArrayList<String> facturas;
+	
+	public Cliente() {
+		this.facturas = new ArrayList<String>();
+	}
+
+	public String getFactura(String fecha, String descripcion, double monto) {
+		return "Fecha: " + fecha + "\nDescripcion: " + descripcion + "\nMonto: $" + monto;
+	}
+	
+	public void guardarFactura(String factura) {
+		facturas.add(factura);
+	}
+	
+	public String getTodasLasFacturas() {
+		String facturas = "";
+		for(String factura : this.facturas) {
+			facturas += factura.toString()+"\n"+"\n";
+		}
+		return facturas;
+	}
+
+}
+public class ConsumidorFinal extends Cliente {
+
+	@Override
+	public String getFactura(String fecha, String descripcion, double monto) {
+		return super.getFactura(fecha, descripcion, monto);
+	}
+	
+
+}
+public class ResponsableInscripto extends Cliente {
+
+	@Override
+	public String getFactura(String fecha,String descripcion,double monto) {
+		double impuestoIngresosBrutos = monto * 0.15;
+		double iva = monto * 0.105;
+		return super.getFactura(fecha, descripcion, monto) + "\nImpuesto Ingresos brutos: " + impuestoIngresosBrutos + "\nIVA: " + iva;		
+	}
+
+}
+public class Empresa extends Cliente {
+
+	@Override
+	public String getFactura(String fecha, String descripcion, double monto) {
+		double montoRetenciones = monto * 0.17;
+		double iva = monto * 0.21;
+		double montoTotal = (monto + montoRetenciones + iva);
+		return super.getFactura(fecha, descripcion, monto) + "\nMonto de retenciones: $" + montoRetenciones
+				+ "\nIVA: $" + iva + "\nMonto total: $" + montoTotal;
+	}
+
+}
+public class Demo {
+
+	public static void main(String[] args) {
+		
+		Negocio negocio = new Negocio();
+		
+		ConsumidorFinal cf = new ConsumidorFinal();
+		String f1 = negocio.facturar(cf, "31/03/22", "Intel Core i7 3770", 100000);
+		String f2 = negocio.facturar(cf, "30/03/22", "AMD FX 8320", 80000);
+		cf.guardarFactura(f1);
+		cf.guardarFactura(f2);
+		System.out.println(cf.getTodasLasFacturas());
+		
+		ResponsableInscripto ri = new ResponsableInscripto();
+		String f3 = negocio.facturar(ri, "31/03/22", "Pantallas", 50000);
+		String f4 = negocio.facturar(ri, "31/03/22", "Teclados", 9000);
+		ri.guardarFactura(f3);
+		ri.guardarFactura(f4);
+		System.out.println(ri.getTodasLasFacturas());
+		
+		Empresa e = new Empresa();
+		String f5 = negocio.facturar(e, "01/04/22", "Computadoras DELL", 150000);
+		String f6 = negocio.facturar(e, "01/04/22", "Computadoras HP", 300000);
+		e.guardarFactura(f5);
+		e.guardarFactura(f6);
+		System.out.println(e.getTodasLasFacturas());
+	}
+
+}
